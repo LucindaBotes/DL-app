@@ -1,0 +1,225 @@
+openapi: 3.0.1
+info:
+  title: Hyperledger Fabric API
+  description: API for managing assets in Hyperledger Fabric
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+paths:
+  /ledger/init:
+    post:
+      summary: Initialize the ledger with seed data
+      responses:
+        '200':
+          description: Ledger initialized successfully
+        '201':
+          description: Ledger created successfully
+
+  /assets:
+    post:
+      summary: Create a new asset
+      requestBody:
+        description: Asset details
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                assetId:
+                  type: string
+                owner:
+                  type: string
+                value:
+                  type: string
+      responses:
+        '201':
+          description: Asset created successfully
+
+  /assets/{assetId}:
+    get:
+      summary: Retrieve an asset's information by ID
+      parameters:
+        - in: path
+          name: assetId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Asset retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  assetId:
+                    type: string
+                  owner:
+                    type: string
+                  value:
+                    type: string
+    put:
+      summary: Update an existing asset
+      parameters:
+        - in: path
+          name: assetId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Updated asset details
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                owner:
+                  type: string
+                value:
+                  type: string
+      responses:
+        '200':
+          description: Asset updated successfully
+    delete:
+      summary: Delete an asset by ID
+      parameters:
+        - in: path
+          name: assetId
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Asset deleted successfully
+
+  /assets/{assetId}/exists:
+    get:
+      summary: Check if an asset exists by ID
+      parameters:
+        - in: path
+          name: assetId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Asset existence checked successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  exists:
+                    type: boolean
+
+  /assets/{assetId}/transfer:
+    post:
+      summary: Transfer ownership of an asset
+      parameters:
+        - in: path
+          name: assetId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: New owner details
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                newOwner:
+                  type: string
+      responses:
+        '200':
+          description: Asset transferred successfully
+
+  /results:
+    get:
+      summary: Retrieve all results from an iterator
+      responses:
+        '200':
+          description: Results retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+
+  /assets/all:
+    get:
+      summary: Get all assets in the ledger
+      responses:
+        '200':
+          description: Assets retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+
+  /assets/{assetId}/history:
+    get:
+      summary: Get the history of a specific asset
+      parameters:
+        - in: path
+          name: assetId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Asset history retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+
+  /assets/query:
+    post:
+      summary: Get all results matching a query string
+      requestBody:
+        description: Query string
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                query:
+                  type: string
+      responses:
+        '200':
+          description: Query results retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+
+  /owners/{ownerId}/assets:
+    get:
+      summary: Get all assets owned by a specific entity
+      parameters:
+        - in: path
+          name: ownerId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Assets retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
