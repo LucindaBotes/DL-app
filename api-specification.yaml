@@ -1,0 +1,289 @@
+openapi: 3.0.1
+info:
+  title: Hyperledger Fabric API
+  description: API for managing assets in Hyperledger Fabric
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+paths:
+  /assets:
+    post:
+      summary: Create a new asset
+      requestBody:
+        description: Asset
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Asset'
+      responses:
+        '201':
+          description: Asset created successfully
+
+  /assets/{assetId}:
+    get:
+      summary: Retrieve an asset's information by ID
+      parameters:
+        - in: path
+          name: AssetId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Asset retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Asset'
+    put:
+      summary: Update an existing asset
+      parameters:
+        - in: path
+          name: assetId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Updated asset details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Asset'
+      responses:
+        '200':
+          description: Asset updated successfully
+    delete:
+      summary: Delete an asset by ID
+      parameters:
+        - in: path
+          name: AssetId
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Asset deleted successfully
+
+  /assets/{assetId}/exists:
+    get:
+      summary: Check if an asset exists by ID
+      parameters:
+        - in: path
+          name: AssetId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Asset existence checked successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  exists:
+                    type: boolean
+
+  /assets/{assetId}/transfer:
+    post:
+      summary: Transfer ownership of an asset
+      parameters:
+        - in: path
+          name: assetId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: New owner details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Transfer'
+      responses:
+        '200':
+          description: Asset transferred successfully
+
+  /assets/all:
+    get:
+      summary: Get all assets in the ledger
+      responses:
+        '200':
+          description: Assets retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Transfer'
+
+  /assets/{assetId}/history:
+    get:
+      summary: Get the history of a specific asset
+      parameters:
+        - in: path
+          name: assetId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Asset history retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TransactionHistory'
+
+  /owners/{ownerId}/assets:
+    get:
+      summary: Get all assets owned by a specific entity
+      parameters:
+        - in: path
+          name: OwnerId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Assets retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Asset'
+
+components:
+  schemas:
+    Asset:
+      type: object
+      properties:
+        ItemID:
+          type: string
+        ItemName:
+          type: string
+        Origin:
+          type: object
+          properties:
+            Farm:
+              type: string
+            OriginLocation:
+              type: string
+            Certifications:
+              type: array
+              items:
+                type: string
+            HarvestDate:
+              type: string
+              format: date
+        Processing:
+          type: object
+          properties:
+            Processor:
+              type: string
+            ProcessingLocation:
+              type: string
+            ProcessDate:
+              type: string
+              format: date-time
+            ProcessType:
+              type: string
+        Packaging:
+          type: object
+          properties:
+            Packager:
+              type: string
+            PackagingLocation:
+              type: string
+            PackageDate:
+              type: string
+              format: date
+            PackageType:
+              type: string
+        Shipment:
+          type: object
+          properties:
+            Shipper:
+              type: string
+            ShipmentID:
+              type: string
+            Origin:
+              type: string
+            Destination:
+              type: string
+            DepartureDate:
+              type: string
+              format: date
+            ArrivalDate:
+              type: string
+              format: date
+            Status:
+              type: string
+        CurrentOwner:
+          type: object
+          properties:
+            Entity:
+              type: string
+            OwnerLocation:
+              type: string
+            ReceivedDate:
+              type: string
+              format: date
+        TransactionHistory:
+          type: array
+          items:
+            type: object
+            properties:
+              TransactionID:
+                type: string
+              Timestamp:
+                type: string
+                format: date-time
+              From:
+                type: string
+              To:
+                type: string
+              Details:
+                type: string
+    Transfer:
+      type: object
+      properties:
+        NewOwner:
+          type: object
+          properties:
+            Entity:
+              type: string
+            OwnerLocation:
+              type: string
+            ReceivedDate:
+              type: string
+              format: date
+        TransferTransaction:
+          type: object
+          properties:
+            TransactionID:
+              type: string
+            Details:
+              type: string
+
+    TransactionHistory:
+      type: array
+      items:
+        type: object
+        properties:
+          TransactionID:
+            type: string
+          Timestamp:
+            type: string
+            format: date-time
+          From:
+            type: string
+          To:
+            type: string
+          Details:
+            type: string
+
