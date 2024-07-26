@@ -429,7 +429,7 @@ export const assetExists = async (assetId) => {
 
 
 // ? @Lucinda Done
-export const readAsset = async (id) => {
+export const ReadAsset = async (id) => {
   const gateway = new Gateway();
   const wallet = await Wallets.newInMemoryWallet();
   const identity = {
