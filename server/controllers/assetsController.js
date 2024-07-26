@@ -8,6 +8,12 @@ import {
   transferAsset,
   getAssetHistory,
   getAssetsByOwner,
+  CompleteShipment,
+  ShipAsset,
+  PackageAsset,
+  ReadAsset,
+  ProcessAsset,
+  GetQueryResultForQueryString
 } from '../models/assetModel.js';
 
 export const createAssetController = (req, res) => {
@@ -158,5 +164,8 @@ export const CompleteShipmentController = (req, res) => {
 
 export const GetQueryResultForQueryStringController = (req, res) => {
   const assets = GetQueryResultForQueryString(req.params.AssetId);
-  res.json(assets);
+  if (assets)
+    res.json(assets);
+  else
+    res.status(404).send('Results not found')
 };
