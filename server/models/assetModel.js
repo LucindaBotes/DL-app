@@ -62,8 +62,8 @@ export const createAsset = async (asset) => {
     const wallet = await Wallets.newInMemoryWallet();
     const identity = {
       credentials: {
-        certificate: certContent,
-        privateKey: privateKey,
+        certificate: process.env.FABRIC_CERT,
+        privateKey: process.env.FABRIC_KEY,
       },
       mspId: cpp.organizations.Org1.mspid,
       type: 'X.509',
