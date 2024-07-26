@@ -1,0 +1,431 @@
+openapi: 3.0.1
+info:
+  title: Hyperledger Fabric API
+  description: API for managing assets in Hyperledger Fabric
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+paths:
+  /api/assets:
+    post:
+      summary: Create a new asset
+      requestBody:
+        description: Asset
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Asset'
+      responses:
+        '201':
+          description: Asset created successfully
+
+  /api/assets/{AssetId}:
+    get:
+      summary: Retrieve an asset's information by ID
+      parameters:
+        - in: path
+          name: AssetId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Asset retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Asset'
+    put:
+      summary: Update an existing asset
+      parameters:
+        - in: path
+          name: AssetId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Updated asset details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Asset'
+      responses:
+        '200':
+          description: Asset updated successfully
+
+    delete:
+      summary: Delete an asset by ID
+      parameters:
+        - in: path
+          name: AssetId
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Asset deleted successfully
+
+  /api/assets/{AssetId}/process:
+    put:
+      summary: Update an existing asset
+      parameters:
+        - in: path
+          name: AssetId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Update process details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Process'
+      responses:
+        '200':
+          description: Process updated successfully
+
+  /api/assets/{AssetId}/package:
+    put:
+      summary: Update an existing asset
+      parameters:
+        - in: path
+          name: AssetId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Update package details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Package'
+      responses:
+        '200':
+          description: Package updated successfully
+
+  /api/assets/{AssetId}/ship:
+    put:
+      summary: Update an existing asset
+      parameters:
+        - in: path
+          name: AssetId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Update shipping details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ship'
+      responses:
+        '200':
+          description: Process updated successfully
+
+  /api/assets/{AssetId}/complete:
+    put:
+      summary: Update an existing asset
+      parameters:
+        - in: path
+          name: AssetId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Update shipping details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompleteShipment'
+      responses:
+        '200':
+          description: Process updated successfully
+
+
+
+  /api/assets/{AssetId}/exists:
+    get:
+      summary: Check if an asset exists by ID
+      parameters:
+        - in: path
+          name: AssetId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Asset existence checked successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  exists:
+                    type: boolean
+
+  /api/assets/{AssetId}/transfer:
+    post:
+      summary: Transfer ownership of an asset
+      parameters:
+        - in: path
+          name: AssetId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: New owner details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Transfer'
+      responses:
+        '200':
+          description: Asset transferred successfully
+
+  /api/assets/all:
+    get:
+      summary: Get all assets in the ledger
+      responses:
+        '200':
+          description: Assets retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Transfer'
+
+  /api/assets/{AssetId}/history:
+    get:
+      summary: Get the history of a specific asset
+      parameters:
+        - in: path
+          name: AssetId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Asset history retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TransactionHistory'
+
+  /api/owners/{OwnerId}/assets:
+    get:
+      summary: Get all assets owned by a specific entity
+      parameters:
+        - in: path
+          name: OwnerId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Assets retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Asset'
+
+components:
+  schemas:
+    Asset:
+      type: object
+      properties:
+        ItemID:
+          type: string
+        ItemName:
+          type: string
+        Origin:
+          type: object
+          properties:
+            Farm:
+              type: string
+            OriginLocation:
+              type: string
+            Certifications:
+              type: array
+              items:
+                type: string
+            HarvestDate:
+              type: string
+              format: date
+        Processing:
+          type: object
+          properties:
+            Processor:
+              type: string
+            ProcessingLocation:
+              type: string
+            ProcessDate:
+              type: string
+              format: date-time
+            ProcessType:
+              type: string
+        Packaging:
+          type: object
+          properties:
+            Packager:
+              type: string
+            PackagingLocation:
+              type: string
+            PackageDate:
+              type: string
+              format: date
+            PackageType:
+              type: string
+        Shipment:
+          type: object
+          properties:
+            Shipper:
+              type: string
+            ShipmentID:
+              type: string
+            Origin:
+              type: string
+            Destination:
+              type: string
+            DepartureDate:
+              type: string
+              format: date
+            ArrivalDate:
+              type: string
+              format: date
+            Status:
+              type: string
+        CurrentOwner:
+          type: object
+          properties:
+            Entity:
+              type: string
+            OwnerLocation:
+              type: string
+            ReceivedDate:
+              type: string
+              format: date
+        TransactionHistory:
+          type: array
+          items:
+            type: object
+            properties:
+              TransactionID:
+                type: string
+              Timestamp:
+                type: string
+                format: date-time
+              From:
+                type: string
+              To:
+                type: string
+              Details:
+                type: string
+    Transfer:
+      type: object
+      properties:
+        NewOwner:
+          type: object
+          properties:
+            Entity:
+              type: string
+            OwnerLocation:
+              type: string
+            ReceivedDate:
+              type: string
+              format: date
+        TransferTransaction:
+          type: object
+          properties:
+            TransactionID:
+              type: string
+            Details:
+              type: string
+
+    TransactionHistory:
+      type: array
+      items:
+        type: object
+        properties:
+          TransactionID:
+            type: string
+          Timestamp:
+            type: string
+            format: date-time
+          From:
+            type: string
+          To:
+            type: string
+          Details:
+            type: string
+
+    Process:
+      type: object
+      properties:
+        Processor:
+          type: string
+        ProcessingLocation:
+          type: string
+        ProcessDate:
+          type: string
+          format: date-time
+        ProcessType:
+          type: string
+        TransactionID:
+          type: string
+
+    Package:
+      type: object
+      properties:
+        Packager:
+          type: string
+        PackagingLocation:
+          type: string
+        PackageDate:
+          type: string
+          format: date
+        PackageType:
+          type: string
+        TransactionID:
+          type: string
+
+    Ship:
+      type: object
+      properties:
+        Shipper:
+          type: string
+        ShipmentID:
+          type: string
+        Destination:
+          type: string
+        DepartureDate:
+          type: string
+          format: date
+        Status:
+          type: string
+        TransactionID:
+          type: string
+
+    CompleteShipment:
+      type: object
+      properties:
+        Recipient:
+          type: string
+        ArrivalDate:
+          type: string
+          format: date
+        Status:
+          type: string
+        TransactionID:
+          type: string
